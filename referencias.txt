@@ -1,0 +1,60 @@
+D:\Sites\Demos\DB1_Teste
+
+composer update
+
+php bin/console make:entity Product
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+
+
+php bin/console doctrine:fixtures:load
+vendor\bin\phpunit
+
+
+Alt-Insert -> Getters e Setters
+
+
+server:run
+server:stop
+
+
+php bin/console debug:router
+
+-----------
+https://symfony.com/doc/current/best_practices/creating-the-project.html
+https://symfony.com/doc/current/doctrine.html
+https://symfony.com/doc/current/doctrine/associations.html
+http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html
+https://symfony.com/doc/current/validation.html
+https://symfony.com/doc/current/validation.html#basic-constraints
+https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html
+
+https://phpunit.de/manual/current/en/installation.html#installation.phar
+https://symfony.com/doc/current/testing/doctrine.html
+http://symfony.com/doc/current/contributing/code/standards.html
+
+https://symfony.com/doc/current/page_creation.html
+https://symfony.com/doc/current/setup/flex.html
+
+https://symfony.com/doc/current/forms.html
+
+
+
+
+
+
+https://symfony.com/doc/master/bundles/SensioGeneratorBundle/commands/generate_doctrine_crud.html
+
+
+
+https://www.amalhichri.net/basic-cruds-with-symfony/
+
+http://codesamplez.com/development/doctrine-crud-operation-with-code-example
+
+https://github.com/vitthalaa/symfony3-crud
+
+https://www.youtube.com/watch?v=OEsC5mMx32Q
+
+http://www.diegobrocanelli.com.br/doctrine/crud-simples-facil-e-rapido-com-doctrine/
+
+
