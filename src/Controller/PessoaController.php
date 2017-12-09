@@ -1,95 +1,95 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Produto;
+use App\Entity\Pessoa;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 
-class ProdutoController extends Controller
+class PessoaController extends Controller
 {
     
      /**
-      * @Route("/produto/add")
+      * @Route("/pessoa/add")
       */    
     public function add(Request $request)
     {
-        $oProduto = new Produto();
+        $oPessoa = new Pessoa();
         
-        $form = $this->montaForm($oProduto);
+        $form = $this->montaForm($oPessoa);
         
         $form->handleRequest($request);    
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $oProduto = $form->getData();
+            $oPessoa = $form->getData();
             
             $em = $this->getDoctrine()->getManager();
-            $em->persist($oProduto);
+            $em->persist($oPessoa);
             $em->flush(); 
 
             return new Response(
-                '<html><body>Produto salvo com sucesso!</body></html>'
+                '<html><body>Pessoa salva com sucesso!</body></html>'
             );
         }        
         
-        return $this->render('Produto/produto_detalhe.html.twig', array( 
+        return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
             'form' => $form->createView()
         ));        
     }
     
      /**
-      * @Route("/produto/edit/{id}")
+      * @Route("/pessoa/edit/{id}")
       */       
     public function edit($id, Request $request)
     {
-        $oProduto = $this->getDoctrine()
-            ->getRepository(Produto::class)
+        $oPessoa = $this->getDoctrine()
+            ->getRepository(Pessoa::class)
             ->find($id);
-        if (isset($oProduto)) 
+        if (isset($oPessoa)) 
         {
-            $form = $this->montaForm($oProduto);
+            $form = $this->montaForm($oPessoa);
 
             $form->handleRequest($request);    
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $oProduto = $form->getData();
+                $oPessoa = $form->getData();
 
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($oProduto);
+                $em->persist($oPessoa);
                 $em->flush(); 
 
                 return new Response(
-                    '<html><body>Produto salvo com sucesso!</body></html>'
+                    '<html><body>Pessoa salva com sucesso!</body></html>'
                 );
             }        
 
-            return $this->render('Produto/produto_detalhe.html.twig', array( 
+            return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
                 'form' => $form->createView()
             ));        
         }
         else 
         {
             return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
+                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
             );
         }
     }
     
      /**
-      * @Route("/produto/view/{id}")
+      * @Route("/pessoa/view/{id}")
       */    
     public function view($id, Request $request)
     {
-        $oProduto = $this->getDoctrine()
-            ->getRepository(Produto::class)
+        $oPessoa = $this->getDoctrine()
+            ->getRepository(Pessoa::class)
             ->find($id);
-        if (isset($oProduto)) {
-            $form = $this->montaForm($oProduto, true);
+        if (isset($oPessoa)) {
+            $form = $this->montaForm($oPessoa, true);
 
             $form->handleRequest($request);              
             
@@ -100,64 +100,57 @@ class ProdutoController extends Controller
                 );
             }        
 
-            return $this->render('Produto/produto_detalhe.html.twig', array( 
+            return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
                 'form' => $form->createView()
             ));        
         }
         else 
         {
             return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
+                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
             );
         }
     }    
     
      /**
-      * @Route("/produto/delete/{id}")
+      * @Route("/pessoa/delete/{id}")
       */    
     public function delete($id)
     {
-        $oProduto = $this->getDoctrine()
-            ->getRepository(Produto::class)
+        $oPessoa = $this->getDoctrine()
+            ->getRepository(Pessoa::class)
             ->find($id);
-        if (isset($oProduto)) {
+        if (isset($oPessoa)) {
             $em = $this->getDoctrine()->getManager();
-            $em->remove($oProduto);
+            $em->remove($oPessoa);
             $em->flush(); 
             
             return new Response(
-                '<html><body>Produto excluído.</body></html>'
+                '<html><body>Pessoa excluída.</body></html>'
             );
         }
         else 
         {
             return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
+                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
             );
         }
     }      
     
     /**
      * 
-     * @param Produto $produto
+     * @param Pessoa $pessoa
      * @param bool $readOnly
      */
-    private function montaForm($produto, $readOnly = false)
+    private function montaForm($pessoa, $readOnly = false)
     {    
-        $form = $this->createFormBuilder($produto)
-            ->add('codigo', TextType::class, array(
-                'label' => 'Código',
-                'required' => true,
-                'disabled' => $readOnly === true ? true : false,
-                'attr' => array('class' => 'form-control'),                
-            ))
+        $form = $this->createFormBuilder($pessoa)
             ->add('nome', TextType::class, array(
                 'required' => true,
                 'disabled' => $readOnly === true ? true : false,
                 'attr' => array('class' => 'form-control'),                 
             ))                
-            ->add('precoUnitario', MoneyType::class, array(
-                'currency'=>'BRL',
+            ->add('dataNascimento', BirthdayType::class, array(
                 'required' => true,
                 'disabled' => $readOnly === true ? true : false,
                 'attr' => array('class' => 'form-control'),                 
