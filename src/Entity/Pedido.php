@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Events as EV;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,9 +13,14 @@ use Doctrine\Common\Collections\Collection;
  * @ORM\Entity(repositoryClass="App\Repository\PedidoRepository")
  * @UniqueEntity("id")
  * @UniqueEntity("numero")
+ * @ORM\HasLifecycleCallbacks
  */
 class Pedido
 {
+    public function __construct() {
+        $this->itensPedido = new ArrayCollection();
+        //$this->numero = $this->getProximoNumero();
+    }
     
     /*----- ATRIBUTOS -----*/
     
@@ -26,18 +32,19 @@ class Pedido
     private $id;
     
     /**
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer", unique=true)
+     */    
+    private $numero;
+    
+    
+    /**
      * Um Pedido tem um cliente.
      * @ORM\OneToOne(targetEntity="Pessoa")
      * @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */    
     private $cliente;
-    
-    /**
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer", unique=true)
-     */    
-    private $numero;
     
     /** 
      * @ORM\Column(type="date", name="dataemissao") 
@@ -58,10 +65,6 @@ class Pedido
      * @Assert\NotBlank()
      */    
     private $itensPedido;    
-    
-    public function __construct() {
-        $this->itensPedido = new ArrayCollection();
-    }
     
     /*----- GETTERS -----*/    
     
@@ -93,7 +96,11 @@ class Pedido
     }
 
     /*----- SETTERS -----*/
-    
+
+    public function setNumero($numero) {
+        $this->numero = $numero;
+    }
+
     public function setCliente($cliente) {
         $this->cliente = $cliente;
     }
@@ -109,16 +116,33 @@ class Pedido
     public function setItensPedido($itensPedido) {
         $this->itensPedido = $itensPedido;
     }
+    
+    /*----- -----*/
 
     public function addItemPedido(ItemPedido $itemPedido)
     {
-        if ($this->products->contains($itemPedido)) {
+        if ($this->itensPedido->contains($itemPedido)) {
             return;
         }
 
-        $this->$itemPedido[] = $itemPedido;
-        // set the *owning* side!
         $itemPedido->setPedido($this);
+        $this->itensPedido[] = $itemPedido;
     }    
+    
+    /**
+     * Evento disparado antes de persistir o objeto, para gerar o numero.
+     * Fonte: http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/events.html
+     * @ORM\PrePersist
+     */
+    public function setNumeroValue( \Doctrine\ORM\Event\LifecycleEventArgs $event ) {
+        $em = $event->getEntityManager();
+        $repository = $em->getRepository( get_class($this) );
+        
+        $iProximoNumero = $repository->getProximoNumero();
+        
+        $this->setNumero($iProximoNumero);
+    }    
+    
+  
     
 }
