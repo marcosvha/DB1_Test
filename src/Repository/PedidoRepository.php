@@ -12,6 +12,17 @@ class PedidoRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Pedido::class);
     }
+    
+    public function getProximoNumero()
+    {
+        $iProximoNumero = $this->createQueryBuilder('e')
+            ->select('MAX(p.numero)')
+            ->from('App\Entity\Pedido', 'p')
+            ->getQuery()
+            ->getSingleScalarResult();    
+        
+        return (int)$iProximoNumero + 1;
+    }      
 
     /*
     public function findBySomething($value)

@@ -9,9 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class PedidoController extends Controller
 {
@@ -22,6 +23,9 @@ class PedidoController extends Controller
     public function add(Request $request)
     {
         $oPedido = new Pedido();
+        $oPedido->setEmissao(new \DateTime('today'));
+        $oPedido->setTotal(1);
+        
         
         $form = $this->createFormBuilder($oPedido)
             ->add('cliente', EntityType::class, array(
@@ -32,6 +36,13 @@ class PedidoController extends Controller
                 'attr' => array(
                     'class' => 'form-control'
                 ),                
+            ))
+            ->add('emissao', DateType::class, array(
+                'widget' => 'choice',
+                'label' => 'Emissão',                
+                'attr' => array(
+                    'class' => 'form-control'
+                ),                 
             ))                
                 
             /*    
@@ -50,7 +61,7 @@ class PedidoController extends Controller
                 
             ->add('save', SubmitType::class, array(
                 'label' => 'Salvar pedido',
-                'attr' => array('class' => 'btn btn-primary'),                
+                'attr' => array('class' => 'btn btn-primary pull-right'),                
             ))
             ->getForm();        
         
@@ -58,7 +69,7 @@ class PedidoController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             $oPedido = $form->getData();
-            $oPedido->setEmissao(date("Y-m-d H:i:s"));
+            
             
             /* Este trecho tive que fazer hard coded, não consegui finalizar */
             $em = $this->getDoctrine()->getManager();
@@ -66,19 +77,22 @@ class PedidoController extends Controller
             $oFakeProduto = new Produto();
             $oFakeProduto->setCodigo(uniqid(""));
             $oFakeProduto->setNome('Produto ' . $oFakeProduto->getCodigo());
-            $oFakeProduto->setPrecoUnitario(rand(10, 1000));
+            $oFakeProduto->setPrecoUnitario(199.99);
             $em->persist($oFakeProduto);
             
             $oFakeItemPedido = new ItemPedido();
             $oFakeItemPedido->setProduto($oFakeProduto);
             $oFakeItemPedido->setPrecoUnitario($oFakeProduto->getPrecoUnitario());
             $oFakeItemPedido->setQuantidade(1);
-            $oFakeItemPedido->setTotal($oFakeItemPedido->getPrecoUnitario() * $oFakeItemPedido->getQuantidade());
+            $oFakeItemPedido->setTotal($oFakeProduto->getPrecoUnitario() * 1);
             $oFakeItemPedido->setPercentualDesconto(0);
+            $oFakeItemPedido->setPedido($oPedido);
             
-            $oPedido->addItemPedido($oFakeItemPedido);
-            $oPedido->setTotal($oFakeItemPedido->getTotal());
+            $oPedido->addItemPedido($oFakeItemPedido);   //PROBLEMA: NÃO ESTÁ SETANDO O ID DO PEDIDO
+            //$oPedido->setTotal($oFakeItemPedido->getTotal());
+            $oPedido->setTotal(1);
 
+            $em->persist($oFakeItemPedido);
             $em->persist($oPedido);
             $em->flush(); /* :( Não está salvando */
 
@@ -87,7 +101,7 @@ class PedidoController extends Controller
             );
         }        
         
-        return $this->render('Pedido/pedido_add.html.twig', array( 
+        return $this->render('Pedido/pedido_detalhe.html.twig', array( 
             'form' => $form->createView()
         ));        
     }
