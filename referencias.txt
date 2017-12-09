@@ -58,3 +58,4 @@ https://www.youtube.com/watch?v=OEsC5mMx32Q
 http://www.diegobrocanelli.com.br/doctrine/crud-simples-facil-e-rapido-com-doctrine/
 
 
+https://packagist.org/explore/

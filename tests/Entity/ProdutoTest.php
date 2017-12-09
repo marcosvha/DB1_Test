@@ -4,11 +4,11 @@ namespace App\Tests\Entity;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\Entity\Produto;
-
+use App\DataFixtures\AppFixtures;
 
 
 /**
- * Description of ProdutoUT
+ * Testes unitários para a entidade Produto.
  *
  * @author marcosvha
  */
@@ -19,14 +19,24 @@ class ProdutoTest extends KernelTestCase
      */
     private $em;
     
+    /**
+     *
+     * @var Doctrine 
+     */
+    private $doc;
+    
     protected function setUp()
     {
         $kernel = self::bootKernel();
-        $this->em = $kernel->getContainer()
-            ->get('doctrine')
+        $this->doc = $kernel->getContainer()
+            ->get('doctrine');
+        $this->em = $this->doc
             ->getManager();
         
-        //$this->inicializaDados();
+        // ToDo: Como limpar os dados, como ocorre ao executar 'php bin/console doctrine:fixtures:load' ?
+        //$appFixtures = new AppFixtures();
+        //$appFixtures->load($this->em);
+        
     }    
     
     public function testCreate() 
@@ -104,10 +114,7 @@ class ProdutoTest extends KernelTestCase
         $this->em->flush();
         $this->assertNotEmpty($oProduto->getId());        
         
-        $kernel = self::bootKernel();
-        $doctrine = $kernel->getContainer()
-            ->get('doctrine');
-        $oProduto2 = $doctrine
+        $oProduto2 = $this->doc
                 ->getRepository(Produto::class)
                 ->find($oProduto->getId());
         
@@ -133,10 +140,7 @@ class ProdutoTest extends KernelTestCase
         $this->em->flush();
         
         // Altera o nome, usando outro objeto
-        $kernel = self::bootKernel();
-        $doctrine = $kernel->getContainer()
-            ->get('doctrine');
-        $oProduto2 = $doctrine
+        $oProduto2 = $this->doc
                 ->getRepository(Produto::class)
                 ->find($oProduto->getId());
         // Valida a persistência da alteração de preço
@@ -147,13 +151,13 @@ class ProdutoTest extends KernelTestCase
         // Valida que não alterou o ID
         $this->assertEquals($oProduto->getId(), $oProduto2->getId());        
 
-        $oProduto3 = $doctrine
+        $oProduto3 = $this->doc
                 ->getRepository(Produto::class)
                 ->find($oProduto2->getId());
         
         $this->assertNotNull($oProduto3);
         $this->assertEquals('Impressora alterada', $oProduto3->getNome());
-        $this->assertNotEquals($oProduto->getNome(), $oProduto3->getNome());
+        $this->assertEquals($oProduto->getNome(), $oProduto3->getNome());
     }
    
     public function testDelete() 
@@ -173,11 +177,7 @@ class ProdutoTest extends KernelTestCase
         $this->em->remove($oProduto);
         $this->em->flush();
         
-        $kernel = self::bootKernel();
-        $doctrine = $kernel->getContainer()
-            ->get('doctrine');
-        
-        $oProduto2 = $doctrine
+        $oProduto2 = $this->doc
                 ->getRepository(Produto::class)
                 ->find($oldId);
         
@@ -188,8 +188,6 @@ class ProdutoTest extends KernelTestCase
     {
         parent::tearDown();
 
-        //$this->limpaDados();        
-        
         $this->em->close();
         $this->em = null; 
     }
