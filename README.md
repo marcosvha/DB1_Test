@@ -10,6 +10,18 @@ O arquivo referencias.txt contém uma série de links e comandos que me foram ú
 1) php bin/console doctrine:fixtures:load
 2) vendor\bin\phpunit
 
-- Para abrir a página (incompleta) de inclusão de pedido:
-1) server:run
-2) http://localhost:8000/pedido/add
+Ações disponíveis (routes):
+- Incluir Produto: http://localhost:8000/produto/add
+- Editar Produto: http://localhost:8000/produto/edit/{id}
+- Ver Produto: http://localhost:8000/produto/view/{id}
+- Excluir Produto: http://localhost:8000/produto/delete/{id}
+
+- Incluir Pessoa: http://localhost:8000/pessoa/add
+- Editar Pessoa: http://localhost:8000/pessoa/edit/{id}
+- Ver Pessoa: http://localhost:8000/pessoa/view/{id}
+- Excluir Pessoa: http://localhost:8000/pessoa/delete/{id}
+
+Incompleta:
+http://localhost:8000/pedido/add
+
+Ainda não implementei a pesquisa.
