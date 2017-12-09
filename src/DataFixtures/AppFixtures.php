@@ -23,7 +23,7 @@ class AppFixtures extends Fixture
         for ($i = 1; $i <= 3; $i++) {
             $oPessoa = new Pessoa();
             $oPessoa->setNome('Pessoa ' . $i);
-            $oPessoa->setDataNascimentoDMY('05/01/2000');
+            $oPessoa->setDataNascimentoDMY('05/' . $i . '/2000');
             $manager->persist($oPessoa);
         }        
         
