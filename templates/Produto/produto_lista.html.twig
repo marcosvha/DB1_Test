@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pesquisar produtos{% endblock %}
+
+{% block body %}
+<div class="container">    
+    <h1>Pesquisar produtos</h1>    
+    <a href="/produto/add" class="btn btn-primary">Incluir</a>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+            <th>
+                Nome
+            </th>
+            <th>
+                Preço unitário
+            </th>
+            <th>
+                Ações
+            </th>
+        </tr>    
+        </thead>
+    {% for produto in produtos %}
+        <tr>
+            <td>
+                {{ produto.codigo }}
+            </td>
+            <td>
+                {{ produto.nome }}
+            </td>
+            <td>
+                {{ produto.precoUnitario|number_format(2, ',', '.') }}
+            </td>
+            <td>
+                <a href="/produto/view/{{ produto.id }}">Ver</a> &nbsp;
+                <a href="/produto/edit/{{ produto.id }}">Alterar</a> &nbsp;
+                <a href="/produto/delete/{{ produto.id }}">Excluir</a>
+            </td>
+        </tr>    
+    {% endfor %}    
+    </table>
+    
+</div>    
+{% endblock %}

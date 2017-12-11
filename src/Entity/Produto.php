@@ -55,7 +55,7 @@ class Produto
     }
 
     public function getPrecoUnitario() {
-        return $this->precoUnitario;
+        return  $this->precoUnitario;
     }
 
     /*----- SETTERS -----*/
