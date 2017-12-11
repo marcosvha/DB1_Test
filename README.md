@@ -10,6 +10,10 @@ O arquivo referencias.txt contém uma série de links e comandos que me foram ú
 1) php bin/console doctrine:fixtures:load
 2) vendor\bin\phpunit
 
+- Para abrir a home:
+1) server:run
+2) http://localhost:8000/
+
 - Para abrir a página (incompleta) de inclusão de pedido:
 1) server:run
 2) http://localhost:8000/pedido/add
