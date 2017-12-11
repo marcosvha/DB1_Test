@@ -19,6 +19,19 @@ class AppFixtures extends Fixture
             $manager->persist($oProduto);
         }        
         
+        $oProduto = new Produto();
+        $oProduto->setNome('Produto XYZ');
+        $oProduto->setPrecoUnitario(mt_rand(200, 900));
+        $oProduto->setCodigo('XYZ123');
+        $manager->persist($oProduto);
+        
+        $oProduto = new Produto();
+        $oProduto->setNome('XYZ Produto');
+        $oProduto->setPrecoUnitario(mt_rand(200, 900));
+        $oProduto->setCodigo('123XYZ');
+        $manager->persist($oProduto);
+        
+        
         // Insere 3 pessoas
         for ($i = 1; $i <= 3; $i++) {
             $oPessoa = new Pessoa();

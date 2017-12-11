@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pesquisar pessoas{% endblock %}
+
+{% block body %}
+<div class="container">    
+    <h1>Pesquisar pessoas</h1>    
+    <a href="/pessoa/add" class="btn btn-primary">Incluir</a>
+    
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Data de nascimento
+            </th>
+            <th>
+                Ações
+            </th>
+        </tr>    
+        </thead>
+    {% for pessoa in pessoas %}
+        <tr>
+            <td>
+                {{ pessoa.nome }}
+            </td>
+            <td>
+                {{ pessoa.dataNascimento|date("m/d/Y") }}
+            </td>
+            <td>
+                <a href="/pessoa/view/{{ pessoa.id }}">Ver</a> &nbsp;
+                <a href="/pessoa/edit/{{ pessoa.id }}">Alterar</a> &nbsp;
+                <a href="/pessoa/delete/{{ pessoa.id }}">Excluir</a>
+            </td>
+        </tr>    
+    {% endfor %}    
+    </table>
+</div>    
+{% endblock %}

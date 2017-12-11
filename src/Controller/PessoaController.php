@@ -13,6 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class PessoaController extends Controller
 {
+    /**
+     * @Route("/pessoa")
+     * @Route("/pessoa/listar")
+     */    
+    public function listar($mensagem = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+        $pessoas = $em->getRepository('App\Entity\Pessoa')->findAll();
+        
+        return $this->render('Pessoa/pessoa_lista.html.twig', array( 
+            'pessoas' => $pessoas,
+            'mensagem' => $mensagem
+        ));        
+    }    
     
      /**
       * @Route("/pessoa/add")
@@ -25,6 +39,7 @@ class PessoaController extends Controller
         
         $form->handleRequest($request);    
         
+        $mensagem = '';
         if ($form->isSubmitted() && $form->isValid()) {
             $oPessoa = $form->getData();
             
@@ -32,13 +47,12 @@ class PessoaController extends Controller
             $em->persist($oPessoa);
             $em->flush(); 
 
-            return new Response(
-                '<html><body>Pessoa salva com sucesso!</body></html>'
-            );
+            $mensagem = 'Pessoa salva com sucesso!';            
         }        
         
         return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'mensagem' => $mensagem
         ));        
     }
     
@@ -56,6 +70,7 @@ class PessoaController extends Controller
 
             $form->handleRequest($request);    
 
+            $mensagem = '';
             if ($form->isSubmitted() && $form->isValid()) {
                 $oPessoa = $form->getData();
 
@@ -63,20 +78,17 @@ class PessoaController extends Controller
                 $em->persist($oPessoa);
                 $em->flush(); 
 
-                return new Response(
-                    '<html><body>Pessoa salva com sucesso!</body></html>'
-                );
+                $mensagem = 'Pessoa salva com sucesso!';
             }        
 
             return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'mensagem' => $mensagem
             ));        
         }
         else 
         {
-            return new Response(
-                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
-            );
+            return $this->listar('Pessoa não encontrada. ID = ' . $id); 
         }
     }
     
@@ -94,10 +106,7 @@ class PessoaController extends Controller
             $form->handleRequest($request);              
             
             if ($form->isSubmitted()) {
-
-                return new Response(
-                    '<html><body>A ideia aqui é voltar para a página anterior... (falta implementar)</body></html>'
-                );
+                return $this->listar('Produto não encontrado. ID = ' . $id); 
             }        
 
             return $this->render('Pessoa/pessoa_detalhe.html.twig', array( 
@@ -106,9 +115,7 @@ class PessoaController extends Controller
         }
         else 
         {
-            return new Response(
-                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
-            );
+            return $this->listar('Pessoa não encontrada. ID = ' . $id); 
         }
     }    
     
@@ -125,15 +132,11 @@ class PessoaController extends Controller
             $em->remove($oPessoa);
             $em->flush(); 
             
-            return new Response(
-                '<html><body>Pessoa excluída.</body></html>'
-            );
+            return $this->listar('Produto excluído.'); 
         }
         else 
         {
-            return new Response(
-                '<html><body>Pessoa não encontrada. ID = ' . $id . '</body></html>'
-            );
+            return $this->listar('Pessoa não encontrada. ID = ' . $id); 
         }
     }      
     

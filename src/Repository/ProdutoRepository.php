@@ -12,17 +12,26 @@ class ProdutoRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Produto::class);
     }
-
-    /*
-    public function findBySomething($value)
+    
+    public function findByNome($value)
     {
         return $this->createQueryBuilder('p')
-            ->where('p.something = :value')->setParameter('value', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('p.nome like :value')->setParameter('value', '%' . $value . '%')
+            ->orderBy('p.nome', 'ASC')
+            ->setMaxResults(20)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
+    public function findByCodigo($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.codigo = :value')->setParameter('value', $value)
+            ->orderBy('p.codigo', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 }

@@ -37,6 +37,7 @@ class ProdutoTest extends KernelTestCase
         //$appFixtures = new AppFixtures();
         //$appFixtures->load($this->em);
         
+        parent::setUp();        
     }    
     
     public function testCreate() 

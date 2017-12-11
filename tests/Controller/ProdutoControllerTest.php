@@ -31,6 +31,8 @@ class ProdutoControllerTest extends WebTestCase
             ->get('doctrine');
         $this->em = $this->doc
             ->getManager();
+        
+        parent::setUp();        
     }    
     
     public function testAdd() 

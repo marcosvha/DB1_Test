@@ -40,12 +40,16 @@ https://symfony.com/doc/current/forms.html
 
 http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/events.html
 
+https://symfony.com/doc/current/components/browser_kit.html
+
+http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/working-with-objects.html#querying
+https://symfony.com/doc/current/templating.html
+
+
 
 
 
 https://symfony.com/doc/master/bundles/SensioGeneratorBundle/commands/generate_doctrine_crud.html
-
-
 
 https://www.amalhichri.net/basic-cruds-with-symfony/
 

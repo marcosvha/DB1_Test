@@ -14,9 +14,25 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class ProdutoController extends Controller
 {
     
-     /**
-      * @Route("/produto/add")
-      */    
+    /**
+     * @Route("/") 
+     * @Route("/produto")
+     * @Route("/produto/listar")
+     */    
+    public function listar($mensagem = '')
+    {
+        $em = $this->getDoctrine()->getManager();
+        $produtos = $em->getRepository('App\Entity\Produto')->findAll();
+        
+        return $this->render('Produto/produto_lista.html.twig', array( 
+            'produtos' => $produtos,
+            'mensagem' => $mensagem
+        ));        
+    }    
+    
+    /**
+     * @Route("/produto/add")
+     */    
     public function add(Request $request)
     {
         $oProduto = new Produto();
@@ -24,7 +40,7 @@ class ProdutoController extends Controller
         $form = $this->montaForm($oProduto);
         
         $form->handleRequest($request);    
-        
+        $mensagem = '';
         if ($form->isSubmitted() && $form->isValid()) {
             $oProduto = $form->getData();
             
@@ -32,24 +48,25 @@ class ProdutoController extends Controller
             $em->persist($oProduto);
             $em->flush(); 
 
-            return new Response(
-                '<html><body>Produto salvo com sucesso!</body></html>'
-            );
+            $mensagem = 'Produto salvo com sucesso!';
         }        
         
         return $this->render('Produto/produto_detalhe.html.twig', array( 
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'mensagem' => $mensagem
+            
         ));        
     }
     
-     /**
-      * @Route("/produto/edit/{id}")
-      */       
+    /**
+     * @Route("/produto/edit/{id}")
+     */       
     public function edit($id, Request $request)
     {
         $oProduto = $this->getDoctrine()
             ->getRepository(Produto::class)
             ->find($id);
+        $mensagem = '';
         if (isset($oProduto)) 
         {
             $form = $this->montaForm($oProduto);
@@ -62,27 +79,24 @@ class ProdutoController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($oProduto);
                 $em->flush(); 
-
-                return new Response(
-                    '<html><body>Produto salvo com sucesso!</body></html>'
-                );
+                
+                $mensagem = 'Produto salvo com sucesso!';
             }        
 
             return $this->render('Produto/produto_detalhe.html.twig', array( 
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'mensagem' => $mensagem
             ));        
         }
         else 
         {
-            return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
-            );
+           return $this->listar('Produto não encontrado. ID = ' . $id); 
         }
     }
     
-     /**
-      * @Route("/produto/view/{id}")
-      */    
+    /**
+     * @Route("/produto/view/{id}")
+     */    
     public function view($id, Request $request)
     {
         $oProduto = $this->getDoctrine()
@@ -94,10 +108,7 @@ class ProdutoController extends Controller
             $form->handleRequest($request);              
             
             if ($form->isSubmitted()) {
-
-                return new Response(
-                    '<html><body>A ideia aqui é voltar para a página anterior... (falta implementar)</body></html>'
-                );
+                return $this->listar(); 
             }        
 
             return $this->render('Produto/produto_detalhe.html.twig', array( 
@@ -106,15 +117,13 @@ class ProdutoController extends Controller
         }
         else 
         {
-            return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
-            );
+           return $this->listar('Produto não encontrado. ID = ' . $id); 
         }
     }    
     
-     /**
-      * @Route("/produto/delete/{id}")
-      */    
+    /**
+     * @Route("/produto/delete/{id}")
+     */    
     public function delete($id)
     {
         $oProduto = $this->getDoctrine()
@@ -125,15 +134,12 @@ class ProdutoController extends Controller
             $em->remove($oProduto);
             $em->flush(); 
             
-            return new Response(
-                '<html><body>Produto excluído.</body></html>'
-            );
+           return $this->listar('Produto excluído.'); 
+       
         }
         else 
         {
-            return new Response(
-                '<html><body>Produto não encontrado. ID = ' . $id . '</body></html>'
-            );
+           return $this->listar('Produto não encontrado. ID = ' . $id); 
         }
     }      
     
